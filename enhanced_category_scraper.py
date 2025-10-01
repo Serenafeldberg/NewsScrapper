@@ -6,6 +6,7 @@ Enhanced Category Scraper that uses the original scraper logic for AI/Tech
 import json
 from pathlib import Path
 from datetime import datetime
+import sys # <--- ¡IMPORTACIÓN CRUCIAL!
 from rss_news_scraper import RSSNewsScraper
 from category_news_scraper import CategoryNewsScraper
 
@@ -22,19 +23,23 @@ class EnhancedCategoryScraper:
                 config = json.load(f)
             return config['categories']
         except FileNotFoundError:
-            print(f"❌ Archivo de configuración {self.config_file} no encontrado.")
+            # [CORREGIDO]
+            sys.stderr.write(f"❌ Archivo de configuración {self.config_file} no encontrado.\n")
             return {}
         except Exception as e:
-            print(f"❌ Error leyendo configuración: {e}")
+            # [CORREGIDO]
+            sys.stderr.write(f"❌ Error leyendo configuración: {e}\n")
             return {}
     
     def scrape_category(self, category_name: str, max_articles_per_source: int = 5):
         """Scrape a specific category using the best method"""
         if category_name not in self.categories:
-            print(f"❌ Categoría '{category_name}' no encontrada")
+            # [CORREGIDO]
+            sys.stderr.write(f"❌ Categoría '{category_name}' no encontrada\n")
             return []
         
-        print(f"🔄 Scraping {category_name}...")
+        # [CORREGIDO]
+        sys.stderr.write(f"🔄 Scraping {category_name}...\n")
         
         # For AI/Tech, use the original scraper logic
         if category_name == "AI/Tech":
@@ -45,7 +50,8 @@ class EnhancedCategoryScraper:
     
     def _scrape_ai_tech_enhanced(self, max_articles_per_source: int):
         """Use the original scraper for AI/Tech to get all 29 articles"""
-        print("🤖 Using enhanced AI/Tech scraper...")
+        # [CORREGIDO]
+        sys.stderr.write("🤖 Using enhanced AI/Tech scraper...\n")
         
         # Use the original RSS scraper
         rss_scraper = RSSNewsScraper()
@@ -59,12 +65,14 @@ class EnhancedCategoryScraper:
                 article_dict['category'] = 'AI/Tech'  # Ensure category is set
                 all_articles.append(article_dict)
         
-        print(f"✅ AI/Tech: {len(all_articles)} articles (enhanced)")
+        # [CORREGIDO]
+        sys.stderr.write(f"✅ AI/Tech: {len(all_articles)} articles (enhanced)\n")
         return all_articles
     
     def _scrape_other_category(self, category_name: str, max_articles_per_source: int):
         """Use regular category scraper for other categories"""
-        print(f"📰 Using regular scraper for {category_name}...")
+        # [CORREGIDO]
+        sys.stderr.write(f"📰 Using regular scraper for {category_name}...\n")
         
         # Use the regular category scraper
         category_scraper = CategoryNewsScraper()
@@ -107,35 +115,39 @@ class EnhancedCategoryScraper:
             with open(json_file, 'w', encoding='utf-8') as f:
                 json.dump(data, f, indent=2, ensure_ascii=False)
             
-            print(f"💾 Saved {len(articles)} articles to {json_file}")
+            # [CORREGIDO]
+            sys.stderr.write(f"💾 Saved {len(articles)} articles to {json_file}\n")
     
     def print_summary(self):
         """Print summary of results"""
-        print("\n" + "="*60)
-        print("📰 ENHANCED CATEGORY NEWS SCRAPER RESULTS")
-        print("="*60)
+        # [CORREGIDO - TODAS las líneas]
+        sys.stderr.write("\n" + "="*60 + "\n")
+        sys.stderr.write("📰 ENHANCED CATEGORY NEWS SCRAPER RESULTS\n")
+        sys.stderr.write("="*60 + "\n")
         
         total_articles = 0
         for category_name, articles in self.results.items():
-            print(f"\n📂 {category_name.upper()}")
-            print("-" * 40)
-            print(f"   Total articles: {len(articles)}")
+            sys.stderr.write(f"\n📂 {category_name.upper()}\n")
+            sys.stderr.write("-" * 40 + "\n")
+            sys.stderr.write(f"   Total articles: {len(articles)}\n")
             
             if articles:
                 for i, article in enumerate(articles[:3], 1):
-                    print(f"   {i}. {article['title']}")
+                    sys.stderr.write(f"   {i}. {article['title']}\n")
                     if article.get('description'):
                         desc = article['description'][:100] + "..." if len(article['description']) > 100 else article['description']
-                        print(f"      📝 {desc}")
-                    print(f"      🔗 {article['url']}")
+                        sys.stderr.write(f"     📝 {desc}\n")
+                    sys.stderr.write(f"     🔗 {article['url']}\n")
                 
                 if len(articles) > 3:
-                    print(f"   ... and {len(articles) - 3} more articles")
+                    sys.stderr.write(f"   ... and {len(articles) - 3} more articles\n")
             
             total_articles += len(articles)
         
-        print(f"\n📊 TOTAL ARTICLES ACROSS ALL CATEGORIES: {total_articles}")
+        sys.stderr.write(f"\n📊 TOTAL ARTICLES ACROSS ALL CATEGORIES: {total_articles}\n")
 
+# NOTA IMPORTANTE: Dejamos esta sección 'main' como estaba, ya que el archivo news_scraper.py
+# será el que llame a esta clase e imprima el JSON final a stdout.
 def main():
     """Main function"""
     scraper = EnhancedCategoryScraper()
@@ -148,12 +160,15 @@ def main():
     scraper.print_summary()
     
     # Save results
-    print(f"\n💾 Saving results to organized folders...")
+    sys.stderr.write(f"\n💾 Saving results to organized folders...\n")
     scraper.save_results()
     
-    print(f"\n✅ Scraping complete! Check the 'news_by_category' folder for results.")
+    sys.stderr.write(f"\n✅ Scraping complete! Check the 'news_by_category' folder for results.\n")
     
-    return results
+    # No devolvemos el JSON aquí, dejamos que news_scraper.py lo haga
+    # Si ejecutaras este script directamente, esta línea sería un log que contamina stdout, 
+    # pero como news_scraper.py llama a main_cli(), este bloque no se ejecuta.
+    # return results
 
 if __name__ == "__main__":
     main()
