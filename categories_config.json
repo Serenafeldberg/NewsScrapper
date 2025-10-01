@@ -1,0 +1,37 @@
+{
+  "categories": {
+    "AI/Tech": {
+      "description": "Artificial Intelligence and Technology News",
+      "urls": [
+        "https://aibusiness.com/",
+        "https://www.artificialintelligence-news.com/",
+        "https://newsroom.ibm.com/",
+        "https://www.trendhunter.com/",
+        "https://venturebeat.com/ai/",
+        "https://news.mit.edu/rss/topic/artificial-intelligence2",
+        "https://openai.com/blog/rss.xml"
+      ]
+    },
+    "Marketing": {
+      "description": "Digital Marketing and Advertising News",
+      "urls": [
+        "https://www.marketingbrew.com/?utm_source=chatgpt.com",
+        "https://www.marketingdive.com/?utm_source=chatgpt.com",
+        "https://www.cxtoday.com/?utm_source=chatgpt.com",
+        "https://digitalmarketinginstitute.com/blog/digital-marketing-trends-2025",
+        "https://news.google.com/topics/CAAqLQgKIidDQkFTRndvSkwyMHZNR1ptZHpWbUVnWmxjeTAwTVRrYUFrRlNLQUFQAQ?hl=es-419&gl=AR&ceid=AR%3Aes-419",
+        "https://www.digitalcommerce360.com/?utm_source=chatgpt.com"
+      ]
+    },
+    "Business": {
+      "description": "Business News",
+      "urls": [
+        "https://nmsconsulting.com/insights/the-biggest-management-consulting-trends-for-2025/?utm_source=chatgpt.com",
+        "https://www.iebschool.com/hub/tendencias-empresariales-innovacion-innovacion/?utm_source=chatgpt.com",
+        "https://www.gartner.com/en/newsroom",
+        "https://fortune.com/",
+        "https://www.entrepreneur.com/"
+      ]
+    }
+  }
+}
