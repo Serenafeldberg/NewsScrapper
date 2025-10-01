@@ -1,0 +1,30 @@
+name: Run News Scraper and Send to n8n
+
+on:
+  workflow_dispatch: {}   # lo disparás desde n8n o manualmente en GitHub
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    env:
+      WEBHOOK_URL: ${{ secrets.N8N_WEBHOOK_URL }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+      - name: Run scraper
+        run: |
+          python3 news_scraper.py > out.json
+
+      - name: Post results to n8n
+        run: |
+          curl -sS -X POST "$WEBHOOK_URL" \
+               -H "Content-Type: application/json" \
+               --data-binary @out.json
