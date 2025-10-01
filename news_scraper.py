@@ -8,6 +8,7 @@ News Scraper Genérico
 
 import argparse
 import sys
+import json # <--- IMPORTACIÓN NECESARIA PARA JSON
 from enhanced_category_scraper import EnhancedCategoryScraper
 
 def parse_arguments():
@@ -17,7 +18,7 @@ def parse_arguments():
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Ejemplos de uso:
-  python3 news_scraper.py                    # Correr todas las categorías
+  python3 news_scraper.py                  # Correr todas las categorías
   python3 news_scraper.py --category Marketing  # Solo Marketing
   python3 news_scraper.py --category "AI/Tech"  # Solo AI/Tech
   python3 news_scraper.py --category Marketing --category "AI/Tech"  # Múltiples categorías
@@ -38,24 +39,37 @@ Ejemplos de uso:
     
     return parser.parse_args()
 
+# --- NUEVA FUNCIÓN PARA IMPRIMIR JSON PURO A STDOUT ---
+def print_final_json(results):
+    """Imprime el resultado final en formato JSON a stdout (para n8n/curl)."""
+    try:
+        json_output = json.dumps(results, ensure_ascii=False, indent=None)
+        sys.stdout.write(json_output)
+        sys.stdout.flush() # Asegura que el JSON se escriba inmediatamente
+    except Exception as e:
+        sys.stderr.write(f"❌ Error al escribir el JSON a stdout: {e}\n")
+        sys.exit(1)
+# ----------------------------------------------------
+
 def list_available_categories():
     """List available categories from config"""
     try:
-        import json
+        # Importamos json aquí solo si se usa, pero ya está arriba
         with open('categories_config.json', 'r', encoding='utf-8') as f:
             config = json.load(f)
         
-        print("📂 Categorías disponibles:")
-        print("=" * 30)
+        # ***** CAMBIOS: Usar sys.stderr.write para los logs *****
+        sys.stderr.write("📂 Categorías disponibles:\n")
+        sys.stderr.write("=" * 30 + "\n")
         for category_name, category_data in config['categories'].items():
-            print(f"• {category_name}")
-            print(f"  📝 {category_data['description']}")
-            print(f"  🔗 {len(category_data['urls'])} URLs")
-            print()
+            sys.stderr.write(f"• {category_name}\n")
+            sys.stderr.write(f"  📝 {category_data['description']}\n")
+            sys.stderr.write(f"  🔗 {len(category_data['urls'])} URLs\n")
+            sys.stderr.write("\n")
     except FileNotFoundError:
-        print("❌ No se encontró categories_config.json")
+        sys.stderr.write("❌ No se encontró categories_config.json\n")
     except Exception as e:
-        print(f"❌ Error leyendo configuración: {e}")
+        sys.stderr.write(f"❌ Error leyendo configuración: {e}\n")
 
 def main_cli():
     """Main CLI function"""
@@ -69,10 +83,12 @@ def main_cli():
     # Determine categories to scrape
     if args.category:
         categories_to_scrape = args.category
-        print(f"🎯 Procesando categorías: {', '.join(categories_to_scrape)}")
+        # [CORREGIDO]
+        sys.stderr.write(f"🎯 Procesando categorías: {', '.join(categories_to_scrape)}\n")
     else:
         categories_to_scrape = None
-        print("🔄 Procesando todas las categorías")
+        # [CORREGIDO] La línea que causaba el error con el emoji '🔄'
+        sys.stderr.write("🔄 Procesando todas las categorías\n")
     
     # Run scraper
     try:
@@ -90,26 +106,35 @@ def main_cli():
         
         scraper.results = results
         
-        # Print summary
+        # Print summary (ASUME que print_summary() ha sido corregido en el otro archivo)
         scraper.print_summary()
         
         # Save results
-        print(f"\n💾 Saving results to organized folders...")
+        # [CORREGIDO]
+        sys.stderr.write(f"\n💾 Saving results to organized folders...\n")
         scraper.save_results()
         
         if results:
-            print(f"\n✅ Scraping completado exitosamente!")
+            # AHORA IMPRIMIMOS EL JSON A STDOUT
+            print_final_json(results)
+            
+            # Mensajes de éxito y métricas (logs a stderr)
+            # [CORREGIDO]
+            sys.stderr.write(f"\n✅ Scraping completado exitosamente!\n")
             total_articles = sum(len(articles) for articles in results.values())
-            print(f"📊 Total de artículos: {total_articles}")
+            sys.stderr.write(f"📊 Total de artículos: {total_articles}\n")
         else:
-            print("❌ No se encontraron artículos")
+            # [CORREGIDO]
+            sys.stderr.write("❌ No se encontraron artículos\n")
             sys.exit(1)
             
     except KeyboardInterrupt:
-        print("\n⏹️  Scraping cancelado por el usuario")
+        # [CORREGIDO]
+        sys.stderr.write("\n⏹️  Scraping cancelado por el usuario\n")
         sys.exit(1)
     except Exception as e:
-        print(f"❌ Error durante el scraping: {e}")
+        # [CORREGIDO]
+        sys.stderr.write(f"❌ Error durante el scraping: {e}\n")
         sys.exit(1)
 
 if __name__ == "__main__":
