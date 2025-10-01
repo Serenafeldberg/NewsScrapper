@@ -3,7 +3,7 @@ name: Run News Scraper and Send to n8n
 on:
   workflow_dispatch:
     inputs:
-      resumeUrl:
+      resumeUrl: # ESTE ES EL INPUT QUE N8N NECESITA
         description: 'n8n Webhook URL to signal completion'
         required: true
         type: string
@@ -11,7 +11,8 @@ on:
 jobs:
   scrape:
     runs-on: ubuntu-latest
-    # env: (Ya no necesitamos WEBHOOK_URL aquí)
+    
+    # Ya no necesitas WEBHOOK_URL aquí, se usa el resumeUrl
     steps:
       - uses: actions/checkout@v4
 
@@ -23,19 +24,24 @@ jobs:
         run: |
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
-      - name: Run scraper
+      - name: Run scraper and capture JSON output
+        # El '>' guarda SOLAMENTE la salida de stdout (el JSON) en out.json. 
+        # Los logs van a stderr y son ignorados aquí.
         run: |
           python3 news_scraper.py > out.json
 
       - name: Post results to n8n (using resumeUrl)
+        # Este paso SÓLO se ejecuta si el scraper anterior fue exitoso
+        if: success()
         run: |
           RESUME_URL=${{ github.event.inputs.resumeUrl }}
 
           if [ -z "$RESUME_URL" ]; then
-            echo "Error: resumeUrl no fue proporcionado. Cayendo en modo standalone."
-            exit 0 # Salir con éxito para no fallar el workflow en GitHub, si se dispara manualmente
+            echo "Error: resumeUrl no fue proporcionado. Terminando."
+            exit 0
           fi
-
+          
+          # Se envía el contenido puro de out.json a la URL de n8n
           curl -sS -X POST "$RESUME_URL" \
                -H "Content-Type: application/json" \
                --data-binary @out.json
