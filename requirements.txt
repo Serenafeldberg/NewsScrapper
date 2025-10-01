@@ -1,1 +1,24 @@
+# Core web scraping dependencies
 feedparser==6.0.10
+requests==2.31.0
+beautifulsoup4==4.12.2
+
+# Data processing and JSON handling
+# (built-in modules: json, datetime, pathlib, re, urllib.parse, time, os, argparse, sys)
+
+# Type hints support
+typing-extensions==4.8.0
+
+# Optional: Enhanced HTTP handling
+urllib3==2.1.0
+
+# Optional: Better date parsing
+python-dateutil==2.8.2
+
+# Optional: Enhanced text processing
+lxml==4.9.3
+
+# Development and testing (optional)
+pytest==7.4.3
+black==23.11.0
+flake8==6.1.0
