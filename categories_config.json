@@ -32,6 +32,19 @@
         "https://fortune.com/",
         "https://www.entrepreneur.com/"
       ]
+    },
+    "Corporate Advisory": {
+      "description": "Corporate Advisory News",
+      "urls": [
+        "https://www.ft.com/markets",
+        "https://www.bloomberg.com/markets",
+        "https://www.reuters.com/business/finance/",
+        "https://techcrunch.com/category/startups/",
+        "https://news.crunchbase.com/",
+        "https://venturebeat.com/category/startups",
+        "https://www.wsj.com/",
+        "https://finance.yahoo.com/"
+      ]
     }
   }
 }
