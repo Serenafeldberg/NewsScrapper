@@ -216,7 +216,7 @@ class NewsArticle:
         }
 
 # --------- Scraping functions ----------
-def scrape_rss_feed(rss_url: str, source_name: str, category: str, max_articles: int = 10) -> List[NewsArticle]:
+def scrape_rss_feed(rss_url: str, source_name: str, category: str, max_articles: int = 15) -> List[NewsArticle]:
     """Scrape articles from RSS feed"""
     articles = []
     try:
@@ -273,7 +273,7 @@ def scrape_rss_feed(rss_url: str, source_name: str, category: str, max_articles:
     
     return articles
 
-def scrape_website_articles(site_url: str, source_name: str, category: str, max_articles: int = 10) -> List[NewsArticle]:
+def scrape_website_articles(site_url: str, source_name: str, category: str, max_articles: int = 15) -> List[NewsArticle]:
     """Scrape articles from website directly"""
     articles = []
     
@@ -345,7 +345,7 @@ class CategoryNewsScraper:
         self.categories[category_name] = urls
         logger.info(f"Added category '{category_name}' with {len(urls)} URLs")
     
-    def scrape_category(self, category_name: str, max_articles_per_source: int = 5) -> List[NewsArticle]:
+    def scrape_category(self, category_name: str, max_articles_per_source: int = 15) -> List[NewsArticle]:
         """Scrape all sources in a category"""
         if category_name not in self.categories:
             logger.error(f"Category '{category_name}' not found")
@@ -375,7 +375,7 @@ class CategoryNewsScraper:
         
         return all_articles
     
-    def scrape_all_categories(self, max_articles_per_source: int = 5) -> Dict[str, List[NewsArticle]]:
+    def scrape_all_categories(self, max_articles_per_source: int = 15) -> Dict[str, List[NewsArticle]]:
         """Scrape all categories"""
         self.results = {}
         
@@ -469,7 +469,7 @@ def main():
     # scraper.add_category("Technology", ["https://techcrunch.com", "https://www.theverge.com"])
     
     # Scrape all categories
-    results = scraper.scrape_all_categories(max_articles_per_source=3)
+    results = scraper.scrape_all_categories(max_articles_per_source=15)
     
     # Print summary
     scraper.print_summary()

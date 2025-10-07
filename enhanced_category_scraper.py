@@ -31,7 +31,7 @@ class EnhancedCategoryScraper:
             sys.stderr.write(f"❌ Error leyendo configuración: {e}\n")
             return {}
     
-    def scrape_category(self, category_name: str, max_articles_per_source: int = 5):
+    def scrape_category(self, category_name: str, max_articles_per_source: int = 15):
         """Scrape a specific category using the best method"""
         if category_name not in self.categories:
             # [CORREGIDO]
@@ -83,7 +83,7 @@ class EnhancedCategoryScraper:
         # Convert to dict format
         return [article.to_dict() for article in articles]
     
-    def scrape_all_categories(self, max_articles_per_source: int = 5):
+    def scrape_all_categories(self, max_articles_per_source: int = 15):
         """Scrape all categories"""
         all_results = {}
         
@@ -153,7 +153,7 @@ def main():
     scraper = EnhancedCategoryScraper()
     
     # Scrape all categories
-    results = scraper.scrape_all_categories(max_articles_per_source=8)
+    results = scraper.scrape_all_categories(max_articles_per_source=15)
     scraper.results = results
     
     # Print summary

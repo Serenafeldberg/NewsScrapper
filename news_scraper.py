@@ -98,7 +98,7 @@ def main_cli():
             # Scrape specific categories
             results = {}
             for category in categories_to_scrape:
-                articles = scraper.scrape_category(category, max_articles_per_source=8)
+                articles = scraper.scrape_category(category, max_articles_per_source=15)
                 results[category] = articles
         else:
             # Scrape all categories

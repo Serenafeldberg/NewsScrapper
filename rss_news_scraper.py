@@ -552,7 +552,7 @@ class RSSNewsScraper:
     def _run_scrape(self, listing_url: str, link_regex: str, source_name: str, source_key: str, max_articles: int) -> List[NewsArticle]:
         return scrape_listing_to_articles(listing_url, link_regex, source_name, source_key, max_articles)
 
-    def scrape_source(self, source_key: str, max_articles: int = 10, ai_only: bool = True) -> List[NewsArticle]:
+    def scrape_source(self, source_key: str, max_articles: int = 15, ai_only: bool = True) -> List[NewsArticle]:
         if source_key not in self.sources:
             logger.error(f"Unknown source: {source_key}")
             return []
@@ -589,7 +589,7 @@ class RSSNewsScraper:
         logger.warning(f"[{source_name}] All strategies failed.")
         return []
 
-    def scrape_all(self, max_articles_per_source: int = 10, ai_only: bool = True) -> Dict[str, List[NewsArticle]]:
+    def scrape_all(self, max_articles_per_source: int = 15, ai_only: bool = True) -> Dict[str, List[NewsArticle]]:
         results: Dict[str, List[NewsArticle]] = {}
         total_articles = 0
         logger.info("Starting RSS/HTML news scraping...")
@@ -608,7 +608,7 @@ class RSSNewsScraper:
         logger.info(f"Total articles scraped: {total_articles}")
         return results
 
-    def scrape_ai_sources_only(self, max_articles_per_source: int = 10) -> Dict[str, List[NewsArticle]]:
+    def scrape_ai_sources_only(self, max_articles_per_source: int = 15) -> Dict[str, List[NewsArticle]]:
         ai_keys = ['aibusiness','ainews','ibm_think','trendhunter_ai','venturebeat_ai','mit_news_ai','openai_blog']
         results: Dict[str, List[NewsArticle]] = {}
         total_articles = 0
@@ -681,7 +681,7 @@ class RSSNewsScraper:
 def main():
     scraper = RSSNewsScraper()
     print("🚀 Starting RSS/HTML News Scraper...")
-    results = scraper.scrape_ai_sources_only(max_articles_per_source=8)
+    results = scraper.scrape_ai_sources_only(max_articles_per_source=15)
     scraper.print_summary(results)
     scraper.save_to_json(results)
     return results
